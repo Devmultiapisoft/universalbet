@@ -3,37 +3,37 @@ export const REFERRAL_CONTRACT_ADDRESS = '0x6EDbcb1df05E09cceB74cb4239b3856B33a2
 export const USDT_CONTRACT_ADDRESS = '0x4aE58BfC16b20bD67755FFD5560e85779D962415'; // Updated address
 
 // Original $1 pool contract - keeping for backward compatibility
-export const RAFFLE_CONTRACT_ADDRESS = '0x1BF59e98C2ae24805C6CfB604Aa8C144E587ac6a'; // Fixed checksum
+export const RAFFLE_CONTRACT_ADDRESS = '0x88046520320b3c9A9521F93b806B89A3D3033f3c'; // Fixed checksum
 
 // All pool contracts with different price tiers
 export const POOL_CONTRACTS = {
   POOL_1_DOLLAR: {
-    address: '0x1BF59e98C2ae24805C6CfB604Aa8C144E587ac6a', // Fixed checksum (Same as RAFFLE_CONTRACT_ADDRESS)
+    address: '0x88046520320b3c9A9521F93b806B89A3D3033f3c', // Fixed checksum (Same as RAFFLE_CONTRACT_ADDRESS)
     name: '$1 Pool',
     entryFeeUSD: 1
   },
   POOL_2_DOLLAR: {
-    address: '0xBb21092B01257Ac601909739fE82206C0c3884EC', // Updated address
+    address: '0xC8BA5B6F7D64a932c0B21959aEE6363312069779', // Updated address
     name: '$10 Pool',
     entryFeeUSD: 10
   },
   POOL_5_DOLLAR: {
-    address: '0x4A93D831F24C192F850eacc48084f5c10918fAC3', // Updated address
+    address: '0x68a149856E825eba8dea6E170dC06d73ceb60981', // Updated address
     name: '$100 Pool',
     entryFeeUSD: 100
   },
   POOL_10_DOLLAR: {
-    address: '0x075AC4F96b552466Fde25219F289A3dA28B562a8', // Updated address
+    address: '0x72daB1882ac380e32879Aec55c703957a0179908', // Updated address
     name: '$1000 Pool',
     entryFeeUSD: 1000
   },
   POOL_20_DOLLAR: {
-    address: '0x31FCAB5ab1eDad7cFCB7f87803e817935465F4DE', // Updated address
+    address: '0x0f6cca406FAb3Efa73920539AfEc9B4E5cD3eea2', // Updated address
     name: '$10000 Pool',
     entryFeeUSD: 10000
   },
   POOL_50_DOLLAR: {
-    address: '0x0EBad2a80B180E254DCEFd492894542775F65F1b', // Updated address
+    address: '0x2e70E79e77cc894DC9c76732D06dE04eE7d416e6', // Updated address
     name: '$100000 Pool',
     entryFeeUSD: 100000
   }
