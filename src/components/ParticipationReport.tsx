@@ -2,29 +2,18 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Chip,
   CircularProgress,
   Alert,
-  Button,
   Card,
   CardContent,
-  CardHeader,
-  Divider,
   Tooltip,
   IconButton,
   Collapse
 } from '@mui/material';
 import { useWallet } from '../context/WalletContext';
 import { getUserPoolParticipation, PoolParticipationData } from '../services/reportService';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
+
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -74,14 +63,14 @@ const ParticipationReport: React.FC = () => {
     setExpanded(!expanded);
   };
 
-  // Group participation data by pool type
-  const groupedData = participationData.reduce((acc, item) => {
-    if (!acc[item.poolType]) {
-      acc[item.poolType] = [];
-    }
-    acc[item.poolType].push(item);
-    return acc;
-  }, {} as Record<string, PoolParticipationData[]>);
+  // Group participation data by pool type - commented out as not currently used
+  // const groupedData = participationData.reduce((acc, item) => {
+  //   if (!acc[item.poolType]) {
+  //     acc[item.poolType] = [];
+  //   }
+  //   acc[item.poolType].push(item);
+  //   return acc;
+  // }, {} as Record<string, PoolParticipationData[]>);
 
   return (
     <Card

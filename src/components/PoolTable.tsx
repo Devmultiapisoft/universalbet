@@ -58,8 +58,8 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolType }) => {
 
   // User state
   const [usdtBalance, setUsdtBalance] = useState<ethers.BigNumber>(ethers.BigNumber.from(0));
-  // Allowance is used for checking if user has approved enough USDT
-  const [allowance, setAllowance] = useState<ethers.BigNumber>(ethers.BigNumber.from(0));
+  // Allowance is used for checking if user has approved enough USDT (used in handleParticipate)
+  const [, setAllowance] = useState<ethers.BigNumber>(ethers.BigNumber.from(0));
 
   // UI state
   const [loading, setLoading] = useState<boolean>(false);

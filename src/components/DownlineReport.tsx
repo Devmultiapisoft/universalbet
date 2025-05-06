@@ -12,20 +12,16 @@ import {
   Chip,
   CircularProgress,
   Alert,
-  Button,
   Card,
   CardContent,
-  CardHeader,
-  Divider,
   Tooltip,
   IconButton,
   Collapse,
   Avatar,
-  Grid,
   TablePagination
 } from '@mui/material';
 import { useWallet } from '../context/WalletContext';
-import { getDownlineReport, DownlineReport as DownlineReportType, UserData } from '../services/reportService';
+import { getDownlineReport, DownlineReport as DownlineReportType } from '../services/reportService';
 import PeopleIcon from '@mui/icons-material/People';
 import PersonIcon from '@mui/icons-material/Person';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -75,7 +71,7 @@ const DownlineReport: React.FC = () => {
     setExpanded(!expanded);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -91,7 +87,8 @@ const DownlineReport: React.FC = () => {
   };
 
   // Format address for display
-  const formatAddress = (address: string) => {
+  const formatAddress = (address: string | null) => {
+    if (!address) return "Unknown";
     return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
   };
 
@@ -126,8 +123,8 @@ const DownlineReport: React.FC = () => {
         </Typography>
         <Box>
           <Tooltip title="Refresh data">
-            <IconButton 
-              onClick={handleRefresh} 
+            <IconButton
+              onClick={handleRefresh}
               disabled={loading}
               sx={{ color: 'white' }}
             >
@@ -135,7 +132,7 @@ const DownlineReport: React.FC = () => {
             </IconButton>
           </Tooltip>
           <Tooltip title={expanded ? "Collapse" : "Expand"}>
-            <IconButton 
+            <IconButton
               onClick={toggleExpanded}
               sx={{ color: 'white' }}
             >
@@ -156,11 +153,11 @@ const DownlineReport: React.FC = () => {
               {error}
             </Alert>
           ) : !report || report.totalUsers === 0 ? (
-            <Alert 
-              severity="info" 
-              sx={{ 
-                mb: 3, 
-                bgcolor: 'rgba(0, 0, 0, 0.3)', 
+            <Alert
+              severity="info"
+              sx={{
+                mb: 3,
+                bgcolor: 'rgba(0, 0, 0, 0.3)',
                 color: 'white',
                 border: '1px solid rgba(255, 255, 255, 0.1)'
               }}
@@ -174,79 +171,76 @@ const DownlineReport: React.FC = () => {
               </Typography>
 
               {/* Summary Cards */}
-              <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid item xs={12} sm={4}>
-                  <Paper 
-                    sx={{ 
-                      p: 3, 
-                      bgcolor: 'rgba(0, 0, 0, 0.3)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: 2,
-                      textAlign: 'center'
-                    }}
-                  >
-                    <Typography variant="h6" sx={{ color: '#fdd835', fontWeight: 600, mb: 1 }}>
-                      Total Downline
-                    </Typography>
-                    <Typography variant="h3" sx={{ color: 'white', fontWeight: 700 }}>
-                      {report.totalUsers}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                      Total users in your network
-                    </Typography>
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Paper 
-                    sx={{ 
-                      p: 3, 
-                      bgcolor: 'rgba(0, 0, 0, 0.3)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: 2,
-                      textAlign: 'center'
-                    }}
-                  >
-                    <Typography variant="h6" sx={{ color: '#fdd835', fontWeight: 600, mb: 1 }}>
-                      Direct Referrals
-                    </Typography>
-                    <Typography variant="h3" sx={{ color: 'white', fontWeight: 700 }}>
-                      {report.directReferrals}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                      Level 1 referrals
-                    </Typography>
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Paper 
-                    sx={{ 
-                      p: 3, 
-                      bgcolor: 'rgba(0, 0, 0, 0.3)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: 2,
-                      textAlign: 'center'
-                    }}
-                  >
-                    <Typography variant="h6" sx={{ color: '#fdd835', fontWeight: 600, mb: 1 }}>
-                      Indirect Referrals
-                    </Typography>
-                    <Typography variant="h3" sx={{ color: 'white', fontWeight: 700 }}>
-                      {report.indirectReferrals}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                      Level 2+ referrals
-                    </Typography>
-                  </Paper>
-                </Grid>
-              </Grid>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 3, mb: 4 }}>
+                <Paper
+                  sx={{
+                    p: 3,
+                    bgcolor: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: 2,
+                    textAlign: 'center',
+                    flex: 1
+                  }}
+                >
+                  <Typography variant="h6" sx={{ color: '#fdd835', fontWeight: 600, mb: 1 }}>
+                    Total Downline
+                  </Typography>
+                  <Typography variant="h3" sx={{ color: 'white', fontWeight: 700 }}>
+                    {report.totalUsers}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                    Total users in your network
+                  </Typography>
+                </Paper>
+                <Paper
+                  sx={{
+                    p: 3,
+                    bgcolor: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: 2,
+                    textAlign: 'center',
+                    flex: 1
+                  }}
+                >
+                  <Typography variant="h6" sx={{ color: '#fdd835', fontWeight: 600, mb: 1 }}>
+                    Direct Referrals
+                  </Typography>
+                  <Typography variant="h3" sx={{ color: 'white', fontWeight: 700 }}>
+                    {report.directReferrals}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                    Level 1 referrals
+                  </Typography>
+                </Paper>
+                <Paper
+                  sx={{
+                    p: 3,
+                    bgcolor: 'rgba(0, 0, 0, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: 2,
+                    textAlign: 'center',
+                    flex: 1
+                  }}
+                >
+                  <Typography variant="h6" sx={{ color: '#fdd835', fontWeight: 600, mb: 1 }}>
+                    Indirect Referrals
+                  </Typography>
+                  <Typography variant="h3" sx={{ color: 'white', fontWeight: 700 }}>
+                    {report.indirectReferrals}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                    Level 2+ referrals
+                  </Typography>
+                </Paper>
+              </Box>
 
               {/* Level Distribution */}
               <Typography variant="h6" sx={{ color: '#fdd835', fontWeight: 600, mb: 2 }}>
                 Level Distribution
               </Typography>
-              <TableContainer 
-                component={Paper} 
-                sx={{ 
+              <TableContainer
+                component={Paper}
+                sx={{
                   bgcolor: 'rgba(0, 0, 0, 0.3)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   borderRadius: 2,
@@ -275,9 +269,9 @@ const DownlineReport: React.FC = () => {
               <Typography variant="h6" sx={{ color: '#fdd835', fontWeight: 600, mb: 2 }}>
                 Downline Users
               </Typography>
-              <TableContainer 
-                component={Paper} 
-                sx={{ 
+              <TableContainer
+                component={Paper}
+                sx={{
                   bgcolor: 'rgba(0, 0, 0, 0.3)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   borderRadius: 2,
@@ -300,12 +294,12 @@ const DownlineReport: React.FC = () => {
                         <TableRow key={user.address} sx={{ '& td': { color: 'white', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' } }}>
                           <TableCell>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                              <Avatar 
-                                sx={{ 
-                                  bgcolor: 'rgba(255, 215, 0, 0.2)', 
-                                  color: '#fdd835', 
-                                  mr: 1, 
-                                  width: 32, 
+                              <Avatar
+                                sx={{
+                                  bgcolor: 'rgba(255, 215, 0, 0.2)',
+                                  color: '#fdd835',
+                                  mr: 1,
+                                  width: 32,
                                   height: 32,
                                   border: '2px solid rgba(255, 215, 0, 0.3)'
                                 }}
@@ -317,11 +311,11 @@ const DownlineReport: React.FC = () => {
                                   {formatAddress(user.address)}
                                 </Typography>
                                 <Tooltip title={copiedAddress === user.address ? "Copied!" : "Copy address"}>
-                                  <IconButton 
-                                    size="small" 
+                                  <IconButton
+                                    size="small"
                                     onClick={() => copyToClipboard(user.address)}
-                                    sx={{ 
-                                      ml: 1, 
+                                    sx={{
+                                      ml: 1,
                                       color: copiedAddress === user.address ? '#4caf50' : '#fdd835',
                                       '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' }
                                     }}
@@ -333,10 +327,10 @@ const DownlineReport: React.FC = () => {
                             </Box>
                           </TableCell>
                           <TableCell>
-                            <Chip 
-                              label={`Level ${user.level}`} 
+                            <Chip
+                              label={`Level ${user.level}`}
                               size="small"
-                              sx={{ 
+                              sx={{
                                 bgcolor: user.level === 1 ? 'rgba(76, 175, 80, 0.7)' : 'rgba(33, 150, 243, 0.7)',
                                 color: 'white',
                                 fontWeight: 'bold'
@@ -345,10 +339,10 @@ const DownlineReport: React.FC = () => {
                           </TableCell>
                           <TableCell>
                             {user.referrer === account?.toLowerCase() ? (
-                              <Chip 
-                                label="You" 
+                              <Chip
+                                label="You"
                                 size="small"
-                                sx={{ 
+                                sx={{
                                   bgcolor: 'rgba(156, 39, 176, 0.7)',
                                   color: 'white',
                                   fontWeight: 'bold'
@@ -364,7 +358,7 @@ const DownlineReport: React.FC = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-              
+
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
@@ -373,7 +367,7 @@ const DownlineReport: React.FC = () => {
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
-                sx={{ 
+                sx={{
                   color: 'white',
                   '.MuiTablePagination-selectIcon, .MuiTablePagination-actions': {
                     color: 'white'

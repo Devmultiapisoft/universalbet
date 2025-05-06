@@ -4,20 +4,14 @@ import {
   Typography,
   Box,
   Paper,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
   CircularProgress,
   Alert,
   Button,
   Card,
   CardContent,
-  Stack,
   Avatar,
   Chip,
   useTheme,
-  useMediaQuery,
   TableContainer,
   Table,
   TableHead,
@@ -44,9 +38,9 @@ interface UserWithReferrer {
 const Users: React.FC = () => {
   const { isConnected, connectWallet } = useWallet();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  // const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Commented out as not currently used
 
-  const [users, setUsers] = useState<string[]>([]);
+  // const [users, setUsers] = useState<string[]>([]); // Commented out as not currently used
   const [usersWithReferrers, setUsersWithReferrers] = useState<UserWithReferrer[]>([]);
   const [totalUsers, setTotalUsers] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
@@ -67,7 +61,7 @@ const Users: React.FC = () => {
   };
 
   // Handle page change
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -89,7 +83,7 @@ const Users: React.FC = () => {
       try {
         // Get all registered users
         const registeredUsers = await getAllRegisteredUsers();
-        setUsers(registeredUsers);
+        // No need to set users state as we're using usersWithReferrers instead
 
         // Get total number of registered users
         const total = await getTotalRegistered();
