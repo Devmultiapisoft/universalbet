@@ -224,14 +224,16 @@ const Dashboard: React.FC = () => {
               '& .MuiBadge-badge': {
                 bgcolor: '#fdd835',
                 color: '#000',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                fontSize: { xs: '0.6rem', sm: '0.7rem', md: '0.75rem' },
+                padding: { xs: '0 4px', sm: '0 6px' }
               }
             }}
           >
             <Avatar
               sx={{
-                width: 56,
-                height: 56,
+                width: { xs: 36, sm: 46, md: 56 },
+                height: { xs: 36, sm: 46, md: 56 },
                 bgcolor: isActive ? 'rgba(255, 215, 0, 0.2)' : 'rgba(0, 0, 0, 0.2)',
                 border: isActive ? '2px solid #fdd835' : '2px solid rgba(255, 255, 255, 0.1)',
                 transition: 'all 0.3s ease',
@@ -240,7 +242,7 @@ const Dashboard: React.FC = () => {
                 color: isActive ? '#fdd835' : 'rgba(255, 255, 255, 0.3)'
               }}
             >
-              {isActive ? <PersonIcon /> : <PersonIcon />}
+              {isActive ? <PersonIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.8rem' } }} /> : <PersonIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.8rem' } }} />}
             </Avatar>
           </Badge>
         </Box>
@@ -328,12 +330,12 @@ const Dashboard: React.FC = () => {
           elevation={5}
           sx={{
             position: 'relative',
-            height: 400,
-            mb: 4,
-            borderRadius: 4,
+            height: { xs: 300, sm: 350, md: 400 },
+            mb: { xs: 3, sm: 4 },
+            borderRadius: { xs: 3, sm: 4 },
             background: 'linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%)',
-            border: '12px solid',
-            borderColor: '#337038',
+            border: { xs: '8px solid', sm: '10px solid', md: '12px solid' },
+            borderColor: '#337038 !important',
             boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
             overflow: 'hidden',
             backgroundImage: `
@@ -344,24 +346,37 @@ const Dashboard: React.FC = () => {
         >
           {/* Game Table Header */}
           <Box sx={{
-            p: 2,
+            p: { xs: 1, sm: 2 },
             display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
             justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '2px solid rgba(255, 215, 0, 0.3)'
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            borderBottom: '2px solid rgba(255, 215, 0, 0.3)',
+            gap: { xs: 1, sm: 0 }
           }}>
-            <Typography variant="h6" sx={{ color: '#fdd835', fontWeight: 600, display: 'flex', alignItems: 'center' }}>
-              <CasinoIcon sx={{ mr: 1, color: '#fdd835' }} />
+            <Typography
+              variant="h6"
+              sx={{
+                color: '#fdd835',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                fontSize: { xs: '0.9rem', sm: '1rem', md: '1.25rem' }
+              }}
+            >
+              <CasinoIcon sx={{ mr: 1, color: '#fdd835', fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.5rem' } }} />
               Current Pool #{poolCounter} - {uniqueUsers}/10 Players
             </Typography>
             <Chip
               label={loadingPool ? "Refreshing..." : `${10 - uniqueUsers} seats available`}
               color={uniqueUsers >= 10 ? "error" : "success"}
+              size="small"
               sx={{
                 color: 'white',
                 fontWeight: 'bold',
                 bgcolor: uniqueUsers >= 10 ? 'rgba(244, 67, 54, 0.7)' : 'rgba(76, 175, 80, 0.7)',
-                '& .MuiChip-label': { px: 2 }
+                '& .MuiChip-label': { px: { xs: 1, sm: 2 } },
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
               }}
             />
           </Box>
@@ -376,8 +391,8 @@ const Dashboard: React.FC = () => {
           }}>
             {/* Center Table */}
             <Box sx={{
-              width: 200,
-              height: 200,
+              width: { xs: 140, sm: 180, md: 200 },
+              height: { xs: 140, sm: 180, md: 200 },
               borderRadius: '50%',
               bgcolor: 'rgba(0, 0, 0, 0.3)',
               border: '2px solid rgba(255, 215, 0, 0.3)',
@@ -387,34 +402,58 @@ const Dashboard: React.FC = () => {
               alignItems: 'center',
               flexDirection: 'column'
             }}>
-              <SportsEsportsIcon sx={{ fontSize: 40, color: '#fdd835', mb: 1 }} />
-              <Typography variant="h6" sx={{ color: '#fdd835', fontWeight: 600 }}>
+              <SportsEsportsIcon sx={{ fontSize: { xs: 24, sm: 32, md: 40 }, color: '#fdd835', mb: 1 }} />
+              <Typography
+                variant="h6"
+                sx={{
+                  color: '#fdd835',
+                  fontWeight: 600,
+                  fontSize: { xs: '0.9rem', sm: '1rem', md: '1.25rem' },
+                  textAlign: 'center',
+                  px: 1
+                }}
+              >
                 Universal Bet
               </Typography>
-              <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+                }}
+              >
                 Pool #{poolCounter}
               </Typography>
             </Box>
 
-            {/* Player Positions */}
-            {renderPlayerPositions()}
+            {/* Player Positions - Hide on very small screens */}
+            <Box sx={{ display: { xs: 'none', sm: 'block' }, width: '100%', height: '100%', position: 'absolute' }}>
+              {renderPlayerPositions()}
+            </Box>
 
             {/* Action Buttons */}
-            <Box sx={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 2 }}>
-
+            <Box sx={{
+              position: 'absolute',
+              bottom: { xs: 10, sm: 20 },
+              left: '50%',
+              transform: 'translateX(-50%)',
+              display: 'flex',
+              gap: 2
+            }}>
               <Button
                 variant="contained"
-                size="large"
+                size={window.innerWidth < 600 ? "medium" : "large"}
                 onClick={() => navigate('/pools')}
                 startIcon={<CasinoIcon />}
                 sx={{
-                  px: 4,
-                  py: 1.5,
+                  px: { xs: 2, sm: 3, md: 4 },
+                  py: { xs: 1, sm: 1.25, md: 1.5 },
                   bgcolor: 'rgba(0,0,0,0.3)',
                   color: 'white',
                   fontWeight: 'bold',
                   borderRadius: 50,
                   border: '1px solid rgba(255,255,255,0.2)',
+                  fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' },
                   '&:hover': {
                     bgcolor: 'rgba(0,0,0,0.5)'
                   }
@@ -426,18 +465,18 @@ const Dashboard: React.FC = () => {
           </Box>
         </Paper>
 
-        <Stack spacing={4}>
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={4}>
+        <Stack spacing={{ xs: 3, sm: 4 }}>
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 3, sm: 4 }}>
             {/* Account Information Card */}
             <Card
               elevation={3}
               sx={{
                 flex: 1,
-                borderRadius: 4,
+                borderRadius: { xs: 3, sm: 4 },
                 overflow: 'hidden',
                 transition: 'transform 0.3s, box-shadow 0.3s',
                 '&:hover': {
-                  transform: 'translateY(-5px)',
+                  transform: { xs: 'none', sm: 'translateY(-5px)' },
                   boxShadow: '0 12px 30px rgba(0, 0, 0, 0.3)'
                 },
                 bgcolor: 'rgba(0, 0, 0, 0.2)',
@@ -446,65 +485,127 @@ const Dashboard: React.FC = () => {
               }}
             >
               <Box sx={{
-                p: 3,
+                p: { xs: 2, sm: 3 },
                 background: 'linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%)',
                 color: 'white',
                 borderBottom: '2px solid rgba(255, 215, 0, 0.3)'
               }}>
-                <Typography variant="h5" sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', color: '#fdd835' }}>
-                  <AccountBalanceWalletIcon sx={{ mr: 1, color: '#fdd835' }} /> Player Information
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: '#fdd835',
+                    fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.5rem' }
+                  }}
+                >
+                  <AccountBalanceWalletIcon sx={{ mr: 1, color: '#fdd835', fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.6rem' } }} />
+                  Player Information
                 </Typography>
               </Box>
 
-              <CardContent sx={{ p: 3, color: 'white' }}>
-                <Box sx={{ mb: 3 }}>
-                  <Typography variant="subtitle2" sx={{ color: '#fdd835', fontWeight: 600, mb: 1 }}>
+              <CardContent sx={{ p: { xs: 2, sm: 3 }, color: 'white' }}>
+                <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      color: '#fdd835',
+                      fontWeight: 600,
+                      mb: 1,
+                      fontSize: { xs: '0.7rem', sm: '0.8rem' }
+                    }}
+                  >
                     YOUR WALLET ADDRESS
                   </Typography>
                   <Box sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    p: 2,
+                    p: { xs: 1.5, sm: 2 },
                     bgcolor: 'rgba(0, 0, 0, 0.3)',
                     borderRadius: 2,
                     wordBreak: 'break-all',
-                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    gap: { xs: 1, sm: 0 }
                   }}>
-                    <Avatar sx={{ bgcolor: 'rgba(255, 215, 0, 0.2)', color: '#fdd835', mr: 2, border: '2px solid rgba(255, 215, 0, 0.3)' }}>
-                      <PersonIcon />
+                    <Avatar
+                      sx={{
+                        bgcolor: 'rgba(255, 215, 0, 0.2)',
+                        color: '#fdd835',
+                        mr: { xs: 0, sm: 2 },
+                        border: '2px solid rgba(255, 215, 0, 0.3)',
+                        width: { xs: 36, sm: 40 },
+                        height: { xs: 36, sm: 40 }
+                      }}
+                    >
+                      <PersonIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.4rem' } }} />
                     </Avatar>
-                    <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: 'monospace',
+                        fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.9rem' },
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        textAlign: { xs: 'center', sm: 'left' },
+                        width: '100%'
+                      }}
+                    >
                       {account}
                     </Typography>
                   </Box>
                 </Box>
 
-                <Box sx={{ mb: 3 }}>
-                  <Typography variant="subtitle2" sx={{ color: '#fdd835', fontWeight: 600, mb: 1 }}>
+                <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      color: '#fdd835',
+                      fontWeight: 600,
+                      mb: 1,
+                      fontSize: { xs: '0.7rem', sm: '0.8rem' }
+                    }}
+                  >
                     PLAYER STATUS
                   </Typography>
                   <Chip
                     label={isRegistered ? "Active Player" : "Not Registered"}
                     color={isRegistered ? "success" : "error"}
-                    icon={isRegistered ? <CheckCircleIcon /> : undefined}
+                    icon={isRegistered ? <CheckCircleIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }} /> : undefined}
+                    size="small"
                     sx={{
                       borderRadius: '20px',
                       px: 1,
                       fontWeight: 600,
                       bgcolor: isRegistered ? 'rgba(76, 175, 80, 0.7)' : 'rgba(244, 67, 54, 0.7)',
-                      color: 'white'
+                      color: 'white',
+                      fontSize: { xs: '0.7rem', sm: '0.8rem' }
                     }}
                   />
                 </Box>
 
                 <Box>
-                  <Typography variant="subtitle2" sx={{ color: '#fdd835', fontWeight: 600, mb: 1 }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      color: '#fdd835',
+                      fontWeight: 600,
+                      mb: 1,
+                      fontSize: { xs: '0.7rem', sm: '0.8rem' }
+                    }}
+                  >
                     YOUR REFERRER
                   </Typography>
                   {loading ? (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <CircularProgress size={20} sx={{ mr: 1, color: '#fdd835' }} />
-                      <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                      <CircularProgress size={16} sx={{ mr: 1, color: '#fdd835' }} />
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'rgba(255, 255, 255, 0.7)',
+                          fontSize: { xs: '0.7rem', sm: '0.8rem' }
+                        }}
+                      >
                         Loading referrer information...
                       </Typography>
                     </Box>
@@ -512,21 +613,48 @@ const Dashboard: React.FC = () => {
                     <Box sx={{
                       display: 'flex',
                       alignItems: 'center',
-                      p: 2,
+                      p: { xs: 1.5, sm: 2 },
                       bgcolor: 'rgba(0, 0, 0, 0.3)',
                       borderRadius: 2,
                       wordBreak: 'break-all',
-                      border: '1px solid rgba(255, 255, 255, 0.1)'
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      gap: { xs: 1, sm: 0 }
                     }}>
-                      <Avatar sx={{ bgcolor: 'rgba(255, 215, 0, 0.2)', color: '#fdd835', mr: 2, border: '2px solid rgba(255, 215, 0, 0.3)' }}>
-                        <PersonIcon />
+                      <Avatar
+                        sx={{
+                          bgcolor: 'rgba(255, 215, 0, 0.2)',
+                          color: '#fdd835',
+                          mr: { xs: 0, sm: 2 },
+                          border: '2px solid rgba(255, 215, 0, 0.3)',
+                          width: { xs: 36, sm: 40 },
+                          height: { xs: 36, sm: 40 }
+                        }}
+                      >
+                        <PersonIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.4rem' } }} />
                       </Avatar>
-                      <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontFamily: 'monospace',
+                          fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.9rem' },
+                          color: 'rgba(255, 255, 255, 0.9)',
+                          textAlign: { xs: 'center', sm: 'left' },
+                          width: '100%'
+                        }}
+                      >
                         {referrer}
                       </Typography>
                     </Box>
                   ) : (
-                    <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'rgba(255, 255, 255, 0.7)' }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontStyle: 'italic',
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        fontSize: { xs: '0.7rem', sm: '0.8rem' }
+                      }}
+                    >
                       No referrer
                     </Typography>
                   )}
@@ -539,11 +667,11 @@ const Dashboard: React.FC = () => {
               elevation={3}
               sx={{
                 flex: 1,
-                borderRadius: 4,
+                borderRadius: { xs: 3, sm: 4 },
                 overflow: 'hidden',
                 transition: 'transform 0.3s, box-shadow 0.3s',
                 '&:hover': {
-                  transform: 'translateY(-5px)',
+                  transform: { xs: 'none', sm: 'translateY(-5px)' },
                   boxShadow: '0 12px 30px rgba(0, 0, 0, 0.3)'
                 },
                 bgcolor: 'rgba(0, 0, 0, 0.2)',
@@ -552,29 +680,54 @@ const Dashboard: React.FC = () => {
               }}
             >
               <Box sx={{
-                p: 3,
+                p: { xs: 2, sm: 3 },
                 background: 'linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%)',
                 color: 'white',
                 borderBottom: '2px solid rgba(255, 215, 0, 0.3)'
               }}>
-                <Typography variant="h5" sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', color: '#fdd835' }}>
-                  <LinkIcon sx={{ mr: 1, color: '#fdd835' }} /> Invite Friends
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: '#fdd835',
+                    fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.5rem' }
+                  }}
+                >
+                  <LinkIcon sx={{ mr: 1, color: '#fdd835', fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.6rem' } }} />
+                  Invite Friends
                 </Typography>
               </Box>
 
-              <CardContent sx={{ p: 3, color: 'white' }}>
-                <Typography variant="body1" sx={{ mb: 3, color: 'rgba(255, 255, 255, 0.9)' }}>
+              <CardContent sx={{ p: { xs: 2, sm: 3 }, color: 'white' }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    mb: { xs: 2, sm: 3 },
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' }
+                  }}
+                >
                   Share this link with friends to invite them to the game. When they register using your link, you'll earn rewards when they participate in pools!
                 </Typography>
 
                 <Box sx={{
-                  p: 3,
+                  p: { xs: 2, sm: 3 },
                   bgcolor: 'rgba(0, 0, 0, 0.3)',
                   borderRadius: 2,
-                  mb: 3,
+                  mb: { xs: 2, sm: 3 },
                   border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}>
-                  <Typography variant="subtitle2" sx={{ color: '#fdd835', fontWeight: 600, mb: 1 }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      color: '#fdd835',
+                      fontWeight: 600,
+                      mb: 1,
+                      fontSize: { xs: '0.7rem', sm: '0.8rem' }
+                    }}
+                  >
                     YOUR INVITATION LINK
                   </Typography>
 
@@ -583,18 +736,22 @@ const Dashboard: React.FC = () => {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     bgcolor: 'rgba(0, 0, 0, 0.3)',
-                    p: 2,
+                    p: { xs: 1.5, sm: 2 },
                     borderRadius: 2,
                     border: '1px solid rgba(255, 255, 255, 0.1)',
-                    wordBreak: 'break-all'
+                    wordBreak: 'break-all',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    gap: { xs: 1, sm: 0 }
                   }}>
                     <Typography
                       variant="body2"
                       sx={{
                         fontFamily: 'monospace',
-                        fontSize: '0.9rem',
-                        mr: 1,
-                        color: '#fdd835'
+                        fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.9rem' },
+                        mr: { xs: 0, sm: 1 },
+                        color: '#fdd835',
+                        textAlign: { xs: 'center', sm: 'left' },
+                        width: '100%'
                       }}
                     >
                       {`${window.location.origin}/register?referrer=${account}`}
@@ -606,7 +763,8 @@ const Dashboard: React.FC = () => {
                           color: copied ? '#4caf50' : '#fdd835',
                           '&:hover': {
                             bgcolor: 'rgba(255, 255, 255, 0.1)'
-                          }
+                          },
+                          flexShrink: 0
                         }}
                         size="small"
                       >
@@ -616,22 +774,30 @@ const Dashboard: React.FC = () => {
                   </Box>
                 </Box>
 
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    fontSize: { xs: '0.7rem', sm: '0.8rem' }
+                  }}
+                >
                   The more friends you invite, the more rewards you can earn! Invite them to join the game now.
                 </Typography>
               </CardContent>
 
-              <CardActions sx={{ p: 3, pt: 0, flexDirection: 'column', gap: 2 }}>
+              <CardActions sx={{ p: { xs: 2, sm: 3 }, pt: 0, flexDirection: 'column', gap: { xs: 1, sm: 2 } }}>
                 <Button
                   variant="contained"
                   fullWidth
                   onClick={copyReferralLink}
                   startIcon={copied ? <CheckCircleIcon /> : <ContentCopyIcon />}
+                  size={window.innerWidth < 600 ? "small" : "medium"}
                   sx={{
                     bgcolor: '#fdd835',
                     color: '#000',
                     fontWeight: 'bold',
                     borderRadius: 50,
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
                     '&:hover': {
                       bgcolor: '#ffeb3b'
                     }
@@ -640,14 +806,16 @@ const Dashboard: React.FC = () => {
                   {copied ? "Copied to Clipboard!" : "Copy Invitation Link"}
                 </Button>
 
-                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, width: '100%' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', gap: { xs: 1, sm: 2 }, width: '100%' }}>
                   <Button
                     variant="contained"
                     onClick={() => shareOnWhatsApp(`${window.location.origin}/register?referrer=${account}`)}
-                    startIcon={<WhatsAppIcon />}
+                    startIcon={<WhatsAppIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />}
+                    size={window.innerWidth < 600 ? "small" : "medium"}
                     sx={{
                       bgcolor: '#25D366',
                       color: 'white',
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
                       '&:hover': {
                         bgcolor: '#128C7E'
                       },
@@ -659,10 +827,12 @@ const Dashboard: React.FC = () => {
                   <Button
                     variant="contained"
                     onClick={() => shareOnTwitter(`${window.location.origin}/register?referrer=${account}`)}
-                    startIcon={<TwitterIcon />}
+                    startIcon={<TwitterIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />}
+                    size={window.innerWidth < 600 ? "small" : "medium"}
                     sx={{
                       bgcolor: '#1DA1F2',
                       color: 'white',
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
                       '&:hover': {
                         bgcolor: '#0c85d0'
                       },
@@ -677,18 +847,21 @@ const Dashboard: React.FC = () => {
           </Stack>
 
           {/* Tabs for Reports */}
-          <Box sx={{ mb: 4 }}>
+          <Box sx={{ mb: { xs: 3, sm: 4 } }}>
             <Tabs
               value={tabValue}
               onChange={handleTabChange}
               variant="fullWidth"
               sx={{
-                mb: 2,
+                mb: { xs: 1.5, sm: 2 },
                 '& .MuiTabs-indicator': {
                   backgroundColor: '#fdd835',
                 },
                 '& .MuiTab-root': {
                   color: 'rgba(255, 255, 255, 0.7)',
+                  fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' },
+                  minHeight: { xs: '48px', sm: '56px' },
+                  padding: { xs: '6px 12px', sm: '12px 16px' },
                   '&.Mui-selected': {
                     color: '#fdd835',
                     fontWeight: 'bold',
@@ -702,12 +875,12 @@ const Dashboard: React.FC = () => {
             >
               <Tab
                 label="Participation Report"
-                icon={<AssessmentIcon />}
+                icon={<AssessmentIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.5rem' } }} />}
                 iconPosition="start"
               />
               <Tab
                 label="Downline Report"
-                icon={<PeopleIcon />}
+                icon={<PeopleIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.5rem' } }} />}
                 iconPosition="start"
               />
             </Tabs>
@@ -725,11 +898,11 @@ const Dashboard: React.FC = () => {
           <Card
             elevation={3}
             sx={{
-              borderRadius: 4,
+              borderRadius: { xs: 3, sm: 4 },
               overflow: 'hidden',
               transition: 'transform 0.3s, box-shadow 0.3s',
               '&:hover': {
-                transform: 'translateY(-5px)',
+                transform: { xs: 'none', sm: 'translateY(-5px)' },
                 boxShadow: '0 12px 30px rgba(0, 0, 0, 0.3)'
               },
               bgcolor: 'rgba(0, 0, 0, 0.2)',
@@ -738,42 +911,74 @@ const Dashboard: React.FC = () => {
             }}
           >
             <Box sx={{
-              p: 3,
+              p: { xs: 2, sm: 3 },
               background: 'linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%)',
               color: 'white',
               borderBottom: '2px solid rgba(255, 215, 0, 0.3)'
             }}>
-              <Typography variant="h5" sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', color: '#fdd835' }}>
-                <EmojiEventsIcon sx={{ mr: 1, color: '#fdd835' }} /> Game Rules & Rewards
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: '#fdd835',
+                  fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.5rem' }
+                }}
+              >
+                <EmojiEventsIcon sx={{ mr: 1, color: '#fdd835', fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.6rem' } }} />
+                Game Rules & Rewards
               </Typography>
             </Box>
 
-            <CardContent sx={{ p: 3, color: 'white' }}>
-              <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} alignItems={{ md: 'center' }}>
+            <CardContent sx={{ p: { xs: 2, sm: 3 }, color: 'white' }}>
+              <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 2, sm: 3 }} alignItems={{ md: 'center' }}>
                 <Box sx={{ flex: 1 }}>
-                  <Typography variant="h6" gutterBottom sx={{ color: '#fdd835', fontWeight: 600 }}>
+                  <Typography
+                    variant="h6"
+                    gutterBottom
+                    sx={{
+                      color: '#fdd835',
+                      fontWeight: 600,
+                      fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' }
+                    }}
+                  >
                     How to Play and Win
                   </Typography>
-                  <Typography variant="body1" sx={{ mb: 2, color: 'rgba(255, 255, 255, 0.9)' }}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      mb: { xs: 1, sm: 2 },
+                      color: 'rgba(255, 255, 255, 0.9)',
+                      fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' }
+                    }}
+                  >
                     Join our raffle pools to win rewards! Each pool requires 10 unique participants, and when the pool is full, 3 participants are randomly selected as "losers". The remaining participants get their entry fee refunded.
                   </Typography>
-                  <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: 'rgba(255, 255, 255, 0.9)',
+                      fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' }
+                    }}
+                  >
                     As a referrer, you'll earn rewards when your referrals participate in pools. The more people you refer, the more rewards you can earn!
                   </Typography>
                 </Box>
-                <Box sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: { xs: 1, sm: 2 } }}>
                   <Button
                     variant="contained"
-                    size="large"
+                    size={window.innerWidth < 600 ? "medium" : "large"}
                     onClick={() => navigate('/pool')}
-                    startIcon={<CasinoIcon />}
+                    startIcon={<CasinoIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />}
                     sx={{
-                      px: 4,
-                      py: 1.5,
+                      px: { xs: 2, sm: 3, md: 4 },
+                      py: { xs: 1, sm: 1.25, md: 1.5 },
                       bgcolor: '#fdd835',
                       color: '#000',
                       fontWeight: 'bold',
                       borderRadius: 50,
+                      fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' },
                       '&:hover': {
                         bgcolor: '#ffeb3b'
                       }
@@ -783,16 +988,17 @@ const Dashboard: React.FC = () => {
                   </Button>
                   <Button
                     variant="outlined"
-                    size="large"
+                    size={window.innerWidth < 600 ? "medium" : "large"}
                     onClick={() => navigate('/pools')}
-                    startIcon={<CasinoIcon />}
-                    endIcon={<ArrowForwardIcon />}
+                    startIcon={<CasinoIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />}
+                    endIcon={<ArrowForwardIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />}
                     sx={{
-                      px: 4,
-                      py: 1.5,
+                      px: { xs: 2, sm: 3, md: 4 },
+                      py: { xs: 1, sm: 1.25, md: 1.5 },
                       color: 'white',
                       borderColor: 'rgba(255, 255, 255, 0.3)',
                       borderRadius: 50,
+                      fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' },
                       '&:hover': {
                         borderColor: 'white',
                         bgcolor: 'rgba(255, 255, 255, 0.1)'

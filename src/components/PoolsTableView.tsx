@@ -238,8 +238,8 @@ const PoolsTableView: React.FC = () => {
     // Combine filled and empty seats
     const allSeats = [...filled.map(() => true), ...empty.map(() => false)];
 
-    // Seat size
-    const seatSize = 50;
+    // Responsive seat size
+    const seatSize = { xs: 36, sm: 42, md: 50 };
 
     // Calculate positions in a circle
     return (
@@ -254,9 +254,21 @@ const PoolsTableView: React.FC = () => {
         {allSeats.map((isFilled, index) => {
           // Calculate position in a circle
           const angle = (index * (360 / totalSeats)) * (Math.PI / 180);
-          const radius = 140; // Distance from center
-          const left = `calc(50% + ${Math.sin(angle) * radius}px - ${seatSize/2}px)`;
-          const top = `calc(50% - ${Math.cos(angle) * radius}px - ${seatSize/2}px)`;
+          // Responsive radius based on screen size
+          const radius = { xs: 100, sm: 120, md: 140 };
+
+          // Dynamic positioning based on screen size
+          const left = {
+            xs: `calc(50% + ${Math.sin(angle) * radius.xs}px - ${seatSize.xs/2}px)`,
+            sm: `calc(50% + ${Math.sin(angle) * radius.sm}px - ${seatSize.sm/2}px)`,
+            md: `calc(50% + ${Math.sin(angle) * radius.md}px - ${seatSize.md/2}px)`
+          };
+
+          const top = {
+            xs: `calc(50% - ${Math.cos(angle) * radius.xs}px - ${seatSize.xs/2}px)`,
+            sm: `calc(50% - ${Math.cos(angle) * radius.sm}px - ${seatSize.sm/2}px)`,
+            md: `calc(50% - ${Math.cos(angle) * radius.md}px - ${seatSize.md/2}px)`
+          };
 
           return (
             <Tooltip
@@ -273,11 +285,11 @@ const PoolsTableView: React.FC = () => {
                   position: 'absolute',
                   left,
                   top,
-                  width: seatSize,
-                  height: seatSize,
+                  width: { xs: seatSize.xs, sm: seatSize.sm, md: seatSize.md },
+                  height: { xs: seatSize.xs, sm: seatSize.sm, md: seatSize.md },
                   borderRadius: '50%',
                   bgcolor: isFilled ? 'rgba(158, 158, 158, 0.8)' : '#fdd835', // Gray for filled, yellow for empty
-                  border: '2px solid rgba(255,255,255,0.7)',
+                  border: { xs: '1px solid rgba(255,255,255,0.7)', sm: '2px solid rgba(255,255,255,0.7)' },
                   boxShadow: '0 4px 10px rgba(0,0,0,0.5)',
                   cursor: isFilled ? 'default' : 'pointer',
                   display: 'flex',
@@ -316,10 +328,10 @@ const PoolsTableView: React.FC = () => {
                       sx={{
                         width: '80%',
                         height: '80%',
-                        border: `2px solid ${getAvatarColor(index)}`,
+                        border: { xs: `1px solid ${getAvatarColor(index)}`, sm: `2px solid ${getAvatarColor(index)}` },
                         bgcolor: 'white',
                         color: 'white',
-                        fontSize: '0.8rem',
+                        fontSize: { xs: '0.6rem', sm: '0.7rem', md: '0.8rem' },
                         fontWeight: 'bold',
                         transition: 'all 0.3s ease',
                         boxShadow: `0 0 10px ${getAvatarColor(index)}80`,
@@ -341,7 +353,7 @@ const PoolsTableView: React.FC = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexDirection: 'column',
-                    border: '2px dashed rgba(255, 235, 59, 0.4)',
+                    border: { xs: '1px dashed rgba(255, 235, 59, 0.4)', sm: '2px dashed rgba(255, 235, 59, 0.4)' },
                     boxShadow: '0 0 15px rgba(255, 235, 59, 0.2)',
                     transition: 'all 0.3s ease',
                     animation: 'pulse-empty 2s infinite ease-in-out',
@@ -366,7 +378,7 @@ const PoolsTableView: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        border: '2px solid rgba(255, 235, 59, 0.5)',
+                        border: { xs: '1px solid rgba(255, 235, 59, 0.5)', sm: '2px solid rgba(255, 235, 59, 0.5)' },
                         boxShadow: '0 0 15px rgba(255, 235, 59, 0.3)',
                         mb: 0.5,
                         position: 'relative',
@@ -391,7 +403,7 @@ const PoolsTableView: React.FC = () => {
                       <PersonIcon
                         sx={{
                           color: '#fdd835',
-                          fontSize: '1.5rem',
+                          fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
                           filter: 'drop-shadow(0 0 5px rgba(255, 235, 59, 0.5))',
                           position: 'relative',
                           zIndex: 2
@@ -402,7 +414,7 @@ const PoolsTableView: React.FC = () => {
                       sx={{
                         background: 'linear-gradient(90deg, rgba(255, 235, 59, 0.7) 0%, rgba(255, 193, 7, 0.7) 100%)',
                         borderRadius: '12px',
-                        padding: '20px 8px',
+                        padding: { xs: '2px 6px', sm: '3px 8px', md: '4px 8px' },
                         border: '1px solid rgba(255, 235, 59, 0.8)',
                         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
                         transform: 'translateY(0)',
@@ -421,10 +433,10 @@ const PoolsTableView: React.FC = () => {
                           color: '#1b5e20',
                           fontWeight: 'bold',
                           textTransform: 'uppercase',
-                          fontSize: '0.7rem',
+                          fontSize: { xs: '0.5rem', sm: '0.6rem', md: '0.7rem' },
                           textAlign: 'center',
                           lineHeight: 1,
-                          textShadow: '0 1px 1px rgba(255, 255, 255, 0.3)'
+                          textShadow: '0 1px 1px hsla(0, 0.00%, 100.00%, 0.30)'
                         }}
                       >
                         Join Now
@@ -451,15 +463,15 @@ const PoolsTableView: React.FC = () => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 120,
-        height: 120,
+        width: { xs: 80, sm: 100, md: 120 },
+        height: { xs: 80, sm: 100, md: 120 },
         borderRadius: '50%',
         bgcolor: 'rgba(0, 0, 0, 0.3)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        border: '2px solid rgba(255, 215, 0, 0.3)',
+        border: { xs: '1px solid rgba(255, 215, 0, 0.3)', sm: '2px solid rgba(255, 215, 0, 0.3)' },
         boxShadow: '0 0 30px rgba(255, 215, 0, 0.2)',
         zIndex: 5
       }}>
@@ -469,8 +481,8 @@ const PoolsTableView: React.FC = () => {
           sx={{
             color: '#fdd835',
             fontWeight: 'bold',
-            fontSize: '1.8rem',
-            mb: 0.5,
+            fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.8rem' },
+            mb: { xs: 0.2, sm: 0.5 },
             textShadow: '0 2px 4px rgba(0,0,0,0.5)'
           }}
         >
@@ -479,8 +491,8 @@ const PoolsTableView: React.FC = () => {
 
         {/* Pool status */}
         <Box sx={{
-          px: 2,
-          py: 0.5,
+          px: { xs: 1, sm: 1.5, md: 2 },
+          py: { xs: 0.3, sm: 0.4, md: 0.5 },
           borderRadius: 10,
           bgcolor: pool.isPaused
             ? 'rgba(244, 67, 54, 0.7)' // Red for paused
@@ -496,9 +508,10 @@ const PoolsTableView: React.FC = () => {
             sx={{
               color: 'white',
               fontWeight: 'bold',
-              fontSize: '0.7rem',
+              fontSize: { xs: '0.5rem', sm: '0.6rem', md: '0.7rem' },
               textTransform: 'uppercase',
-              textAlign: 'center'
+              textAlign: 'center',
+              whiteSpace: 'nowrap'
             }}
           >
             {pool.isPaused ? 'Paused' : pool.uniqueUsers >= 10 ? 'Full' : 'Open'}
@@ -540,11 +553,11 @@ const PoolsTableView: React.FC = () => {
         flexDirection: { xs: 'column', sm: 'row' },
         justifyContent: 'space-between',
         alignItems: 'center',
-        mb: 4,
-        px: 2,
-        py: 2,
+        mb: { xs: 2, sm: 3, md: 4 },
+        px: { xs: 1.5, sm: 2 },
+        py: { xs: 1.5, sm: 2 },
         background: 'linear-gradient(to right, #1b5e20, #2e7d32, #1b5e20)',
-        borderRadius: '10px',
+        borderRadius: { xs: '8px', sm: '10px' },
         boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
         border: '1px solid rgba(255,255,255,0.1)',
         position: 'relative',
@@ -569,15 +582,15 @@ const PoolsTableView: React.FC = () => {
           mb: { xs: 2, sm: 0 }
         }}>
           <Box sx={{
-            width: 50,
-            height: 50,
+            width: { xs: 40, sm: 50 },
+            height: { xs: 40, sm: 50 },
             borderRadius: '50%',
             background: 'linear-gradient(135deg, #fdd835 0%, #f57f17 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
-            mr: 2,
+            mr: { xs: 1.5, sm: 2 },
             animation: 'pulse 2s infinite',
             '@keyframes pulse': {
               '0%': { boxShadow: '0 0 0 0 rgba(255, 215, 0, 0.7)' },
@@ -585,7 +598,7 @@ const PoolsTableView: React.FC = () => {
               '100%': { boxShadow: '0 0 0 0 rgba(255, 215, 0, 0)' }
             }
           }}>
-            <CasinoIcon sx={{ fontSize: 30, color: '#1b5e20' }} />
+            <CasinoIcon sx={{ fontSize: { xs: 24, sm: 30 }, color: '#1b5e20' }} />
           </Box>
           <Box>
             <Typography variant="h4" sx={{
@@ -593,15 +606,17 @@ const PoolsTableView: React.FC = () => {
               color: '#fdd835',
               textShadow: '0 0 10px rgba(0, 0, 0, 0.7)',
               letterSpacing: '1px',
-              lineHeight: 1
+              lineHeight: 1,
+              fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' }
             }}>
               UNIVERSAL BET
             </Typography>
             <Typography variant="subtitle2" sx={{
               color: 'rgba(255,255,255,0.9)',
-              letterSpacing: '2px',
+              letterSpacing: { xs: '1px', sm: '2px' },
               textTransform: 'uppercase',
-              fontWeight: 300
+              fontWeight: 300,
+              fontSize: { xs: '0.65rem', sm: '0.75rem', md: '0.875rem' }
             }}>
               Blockchain Gaming Platform
             </Typography>
@@ -611,16 +626,19 @@ const PoolsTableView: React.FC = () => {
         {/* Balance chip */}
         <Box sx={{
           position: 'relative',
-          zIndex: 5
+          zIndex: 5,
+          width: { xs: '100%', sm: 'auto' }
         }}>
           <Chip
             avatar={
               <Avatar sx={{
                 bgcolor: '#fdd835 !important',
                 color: '#1b5e20 !important',
-                boxShadow: '0 0 10px rgba(255,215,0,0.5)'
+                boxShadow: '0 0 10px rgba(255,215,0,0.5)',
+                width: { xs: 24, sm: 32 },
+                height: { xs: 24, sm: 32 }
               }}>
-                <LocalAtmIcon />
+                <LocalAtmIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
               </Avatar>
             }
             label={`Balance: ${usdtBalance ? ethers.utils.formatUnits(usdtBalance, 18) : '0'} USDT`}
@@ -629,12 +647,13 @@ const PoolsTableView: React.FC = () => {
               backdropFilter: 'blur(5px)',
               color: 'white',
               fontWeight: 700,
-              py: 2.5,
+              py: { xs: 1.5, sm: 2.5 },
               border: '1px solid rgba(255,215,0,0.5)',
               boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
+              width: { xs: '100%', sm: 'auto' },
               '& .MuiChip-label': {
-                px: 2,
-                fontSize: '1rem'
+                px: { xs: 1, sm: 2 },
+                fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' }
               }
             }}
           />
@@ -679,9 +698,9 @@ const PoolsTableView: React.FC = () => {
                     color: '#fdd835', // Yellow color
                     fontWeight: 'bold',
                     textAlign: 'center',
-                    mb: 1,
+                    mb: { xs: 0.5, sm: 1 },
                     textShadow: '0 2px 4px rgba(0,0,0,0.5)',
-                    fontSize: '1.5rem'
+                    fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.5rem' }
                   }}
                 >
                   {pool.name}
@@ -690,10 +709,12 @@ const PoolsTableView: React.FC = () => {
                 {/* Status badges */}
                 <Box sx={{
                   display: 'flex',
-                  gap: 1,
-                  mb: 1,
+                  gap: { xs: 0.5, sm: 1 },
+                  mb: { xs: 0.5, sm: 1 },
                   position: 'relative',
-                  zIndex: 5
+                  zIndex: 5,
+                  flexWrap: { xs: 'wrap', sm: 'nowrap' },
+                  justifyContent: { xs: 'center', sm: 'flex-start' }
                 }}>
                   {/* Status badge */}
                   <Box sx={{
@@ -704,18 +725,19 @@ const PoolsTableView: React.FC = () => {
                         : 'rgba(76, 175, 80, 0.7)', // Green for active
                     color: 'white',
                     fontWeight: 'bold',
-                    fontSize: '0.75rem',
-                    px: 1.5,
-                    py: 0.5,
+                    fontSize: { xs: '0.65rem', sm: '0.7rem', md: '0.75rem' },
+                    px: { xs: 1, sm: 1.5 },
+                    py: { xs: 0.3, sm: 0.5 },
                     borderRadius: '20px',
                     display: 'flex',
                     alignItems: 'center',
                     gap: 0.5,
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                    mb: { xs: 0.5, sm: 0 }
                   }}>
                     <Box sx={{
-                      width: 8,
-                      height: 8,
+                      width: { xs: 6, sm: 8 },
+                      height: { xs: 6, sm: 8 },
                       borderRadius: '50%',
                       bgcolor: 'white',
                       boxShadow: '0 0 5px rgba(255,255,255,0.5)',
@@ -740,9 +762,9 @@ const PoolsTableView: React.FC = () => {
                     bgcolor: 'rgba(33, 150, 243, 0.7)',
                     color: 'white',
                     fontWeight: 'bold',
-                    fontSize: '0.75rem',
-                    px: 1.5,
-                    py: 0.5,
+                    fontSize: { xs: '0.65rem', sm: '0.7rem', md: '0.75rem' },
+                    px: { xs: 1, sm: 1.5 },
+                    py: { xs: 0.3, sm: 0.5 },
                     borderRadius: '20px',
                     display: 'flex',
                     alignItems: 'center',
@@ -758,15 +780,15 @@ const PoolsTableView: React.FC = () => {
                   elevation={5}
                   sx={{
                     position: 'relative',
-                    height: 350,
+                    height: { xs: 280, sm: 320, md: 350 },
                     width: '100%',
                     borderRadius: '50%',
                     overflow: 'hidden',
                     // Green felt background
                     bgcolor: '#1b5e20',
-                    border: '5px solid',
-                    borderColor: '#fdd835',
-                     boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
+                    border: { xs: '3px solid', sm: '4px solid', md: '5px solid' },
+                    borderColor: '#fdd835 !important',
+                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -774,6 +796,8 @@ const PoolsTableView: React.FC = () => {
                       radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 100%),
                       url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E")
                     `,
+                    mx: 'auto', // Center the table on mobile
+                    maxWidth: { xs: '280px', sm: '320px', md: '100%' } // Limit width on mobile
                   }}
                 >
                   {/* Game area */}
@@ -793,8 +817,8 @@ const PoolsTableView: React.FC = () => {
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      width: 80,
-                      height: 80,
+                      width: { xs: 60, sm: 70, md: 80 },
+                      height: { xs: 60, sm: 70, md: 80 },
                       borderRadius: '50%',
                       bgcolor: pool.uniqueUsers >= 10
                         ? 'rgba(76, 175, 80, 0.2)'
@@ -803,8 +827,8 @@ const PoolsTableView: React.FC = () => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       border: pool.uniqueUsers >= 10
-                        ? '2px solid rgba(76, 175, 80, 0.3)'
-                        : '2px solid rgba(255, 215, 0, 0.3)',
+                        ? { xs: '1px solid rgba(76, 175, 80, 0.3)', sm: '2px solid rgba(76, 175, 80, 0.3)' }
+                        : { xs: '1px solid rgba(255, 215, 0, 0.3)', sm: '2px solid rgba(255, 215, 0, 0.3)' },
                       boxShadow: pool.uniqueUsers >= 10
                         ? '0 0 20px rgba(76, 175, 80, 0.2)'
                         : '0 0 20px rgba(255, 215, 0, 0.2)',
@@ -819,7 +843,7 @@ const PoolsTableView: React.FC = () => {
                       <Typography sx={{
                         color: pool.uniqueUsers >= 10 ? '#4caf50' : '#fdd835',
                         fontWeight: 'bold',
-                        fontSize: '1.2rem',
+                        fontSize: { xs: '0.9rem', sm: '1rem', md: '1.2rem' },
                         textAlign: 'center'
                       }}>
                         {pool.uniqueUsers >= 10 ? 'Run Pool' : 'Join'}
@@ -840,7 +864,8 @@ const PoolsTableView: React.FC = () => {
                     position: 'relative',
                     zIndex: 20,
                     display: 'inline-block',
-                    mt: 2
+                    mt: { xs: 1, sm: 1.5, md: 2 },
+                    width: { xs: '100%', sm: 'auto' }
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -852,15 +877,18 @@ const PoolsTableView: React.FC = () => {
                   <Button
                     variant="contained"
                     disabled={pool.isPaused || !pool.isDeployed}
+                    fullWidth={window.innerWidth < 600}
+                    size={window.innerWidth < 600 ? "medium" : "large"}
                     sx={{
                       bgcolor: pool.uniqueUsers >= 10 ? '#4caf50' : '#fdd835',
                       color: pool.uniqueUsers >= 10 ? 'white' : 'black',
                       fontWeight: 'bold',
                       borderRadius: '50px',
-                      px: 3,
-                      py: 1,
+                      px: { xs: 2, sm: 2.5, md: 3 },
+                      py: { xs: 0.75, sm: 1 },
                       cursor: 'pointer !important',
                       pointerEvents: 'auto',
+                      fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
                       '&:hover': {
                         bgcolor: pool.uniqueUsers >= 10 ? '#388e3c' : '#ffeb3b'
                       },
@@ -890,14 +918,14 @@ const PoolsTableView: React.FC = () => {
               {/* Table status text */}
               <Box
                 sx={{
-                  mt: 3,
-                  p: 1.5,
+                  mt: { xs: 2, sm: 2.5, md: 3 },
+                  p: { xs: 1, sm: 1.5 },
                   borderRadius: '8px',
                   background: 'rgba(0,0,0,0.7)',
                   backdropFilter: 'blur(5px)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                  maxWidth: '90%',
+                  maxWidth: '95%',
                   mx: 'auto',
                   position: 'relative',
                   overflow: 'hidden'
@@ -929,7 +957,9 @@ const PoolsTableView: React.FC = () => {
                     fontWeight: 500,
                     position: 'relative',
                     zIndex: 1,
-                    textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+                    textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                    fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' },
+                    px: { xs: 0.5, sm: 1 }
                   }}
                 >
                   {!pool.isDeployed
