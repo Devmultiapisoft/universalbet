@@ -173,7 +173,7 @@ const Pool: React.FC = () => {
       setError(null);
 
       // Approve a large amount to avoid multiple approvals
-      const approvalAmount = ethers.utils.parseUnits('1000', 18); // 1000 USDT
+      const approvalAmount = ethers.utils.parseUnits('100000', 18); // 1000 USDT
       console.log(`Approving ${ethers.utils.formatUnits(approvalAmount, 18)} USDT for ${RAFFLE_CONTRACT_ADDRESS}...`);
 
       await approveUSDT(RAFFLE_CONTRACT_ADDRESS, approvalAmount);

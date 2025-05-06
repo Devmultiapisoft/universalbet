@@ -177,7 +177,7 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolType }) => {
       setError(null);
 
       // Approve a large amount to avoid multiple approvals
-      const approvalAmount = ethers.utils.parseUnits('1000', 18); // 1000 USDT
+      const approvalAmount = ethers.utils.parseUnits('100000', 18); // 1000 USDT
       console.log(`Approving ${ethers.utils.formatUnits(approvalAmount, 18)} USDT for ${poolAddress}...`);
 
       await approveUSDT(poolAddress, approvalAmount);
