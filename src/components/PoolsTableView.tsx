@@ -19,15 +19,11 @@ import {
   getEntryFee,
   getPoolStrength,
   getUSDTBalance,
-  getPoolWinnersArr,
-  getPoolLosersArr
 } from '../services/contractService';
 import { POOL_CONTRACTS } from '../config';
 import CasinoIcon from '@mui/icons-material/Casino';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import PersonIcon from '@mui/icons-material/Person';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import { useNavigate } from 'react-router-dom';
 
 interface PoolData {
@@ -461,10 +457,6 @@ const PoolsTableView: React.FC = () => {
     );
   };
 
-  // Helper function to format address for display
-  const formatAddress = (address: string): string => {
-    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-  };
 
   
 
