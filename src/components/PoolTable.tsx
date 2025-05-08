@@ -31,7 +31,9 @@ import {
   getUSDTAllowance,
   getPoolStrength,
   getPoolContractAddress,
-  runPool
+  runPool,
+  getPoolWinnersArr,
+  getPoolLosersArr
 } from '../services/contractService';
 import CasinoIcon from '@mui/icons-material/Casino';
 import GroupIcon from '@mui/icons-material/Group';
@@ -40,6 +42,10 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { Link } from '@mui/material';
 import { POOL_CONTRACTS } from '../config';
 
 interface PoolTableProps {
@@ -70,6 +76,10 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolType }) => {
   const [success, setSuccess] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
+  // Previous pool results
+  const [previousPoolWinners, setPreviousPoolWinners] = useState<string[]>([]);
+  const [previousPoolLosers, setPreviousPoolLosers] = useState<string[]>([]);
+
   // Get pool name and info
   const poolInfo = POOL_CONTRACTS[poolType as keyof typeof POOL_CONTRACTS];
   const poolName = poolInfo?.name || poolType;
@@ -94,10 +104,11 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolType }) => {
       try {
         // Get pool data
         const counter = await getPoolCounter(poolType);
-        setPoolCounter(Number(counter));
+        const counterNum = Number(counter);
+        setPoolCounter(counterNum);
 
         try {
-          const users = await getPoolUniqueUsers(Number(counter), poolType);
+          const users = await getPoolUniqueUsers(counterNum, poolType);
           setUniqueUsers(Number(users));
         } catch (error) {
           console.error(`Error fetching unique users for ${poolName}:`, error);
@@ -121,11 +132,39 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolType }) => {
         }
 
         try {
-          const strength = await getPoolStrength(Number(counter), poolType);
+          const strength = await getPoolStrength(counterNum, poolType);
           setPoolStrength(Number(strength));
         } catch (error) {
           console.error(`Error fetching pool strength for ${poolName}:`, error);
           setPoolStrength(0);
+        }
+
+        // Get winners and losers from the previous pool (if any)
+        if (counterNum > 0) {
+          // There is a previous pool (current pool counter - 1)
+          const previousPoolId = counterNum - 1;
+
+          try {
+            const winners = await getPoolWinnersArr(previousPoolId, poolType);
+            setPreviousPoolWinners(winners);
+            console.log(`Previous pool (${previousPoolId}) winners for ${poolName}:`, winners);
+          } catch (error) {
+            console.error(`Error fetching winners for previous pool ${previousPoolId} of ${poolName}:`, error);
+            setPreviousPoolWinners([]);
+          }
+
+          try {
+            const losers = await getPoolLosersArr(previousPoolId, poolType);
+            setPreviousPoolLosers(losers);
+            console.log(`Previous pool (${previousPoolId}) losers for ${poolName}:`, losers);
+          } catch (error) {
+            console.error(`Error fetching losers for previous pool ${previousPoolId} of ${poolName}:`, error);
+            setPreviousPoolLosers([]);
+          }
+        } else {
+          // No previous pool
+          setPreviousPoolWinners([]);
+          setPreviousPoolLosers([]);
         }
       } catch (error) {
         console.error(`Error fetching pool counter for ${poolName}:`, error);
@@ -363,6 +402,16 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolType }) => {
     setOpenDialog(false);
   };
 
+  // Helper function to format address for display
+  const formatAddress = (address: string): string => {
+    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+  };
+
+  // Helper function to get BscScan URL for an address
+  const getBscScanUrl = (address: string): string => {
+    return `https://bscscan.com/address/${address}`;
+  };
+
   // Fetch data on component mount and when connection status changes
   useEffect(() => {
     if (isConnected && account) {
@@ -573,6 +622,441 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolType }) => {
               </Typography>
             </Box>
           </Stack>
+
+          {/* Previous Pool Results - Gaming Style */}
+          {poolCounter > 0 && (previousPoolWinners.length > 0 || previousPoolLosers.length > 0) && (
+            <Box sx={{
+              mt: 4,
+              position: 'relative',
+              borderRadius: 3,
+              overflow: 'hidden',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
+              background: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
+              border: '2px solid rgba(255, 215, 0, 0.3)',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                opacity: 0.1,
+                zIndex: 0
+              }
+            }}>
+              {/* Header with glowing effect */}
+              <Box sx={{
+                position: 'relative',
+                p: 2,
+                background: 'linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 100%)',
+                borderBottom: '2px solid rgba(255, 215, 0, 0.3)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                overflow: 'hidden'
+              }}>
+                {/* Animated background light */}
+                <Box sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'radial-gradient(circle at center, rgba(255, 215, 0, 0.2) 0%, transparent 70%)',
+                  animation: 'pulse 3s infinite',
+                  '@keyframes pulse': {
+                    '0%': { opacity: 0.3 },
+                    '50%': { opacity: 0.7 },
+                    '100%': { opacity: 0.3 }
+                  }
+                }} />
+
+                <CasinoIcon sx={{
+                  color: '#fdd835',
+                  mr: 1.5,
+                  fontSize: '2rem',
+                  animation: 'spin 10s linear infinite',
+                  '@keyframes spin': {
+                    '0%': { transform: 'rotate(0deg)' },
+                    '100%': { transform: 'rotate(360deg)' }
+                  }
+                }} />
+
+                <Typography variant="h5" sx={{
+                  color: '#fdd835',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  letterSpacing: '2px',
+                  textShadow: '0 0 10px rgba(255, 215, 0, 0.7), 0 0 20px rgba(255, 215, 0, 0.5)',
+                  position: 'relative',
+                  zIndex: 2
+                }}>
+                  Pool #{poolCounter - 1} Results
+                </Typography>
+              </Box>
+
+              <Box sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                position: 'relative',
+                zIndex: 1
+              }}>
+                {/* Winners Section */}
+                {previousPoolWinners.length > 0 && (
+                  <Box sx={{
+                    flex: 1,
+                    p: 3,
+                    position: 'relative',
+                    background: 'linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%)',
+                    borderRight: { xs: 'none', sm: '1px solid rgba(255, 255, 255, 0.1)' },
+                    borderBottom: { xs: '1px solid rgba(255, 255, 255, 0.1)', sm: 'none' },
+                    overflow: 'hidden'
+                  }}>
+                    {/* Animated background */}
+                    <Box sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      background: 'radial-gradient(circle at 30% 30%, rgba(76, 175, 80, 0.1) 0%, transparent 70%)',
+                      zIndex: 0
+                    }} />
+
+                    {/* Winners Header */}
+                    <Box sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      mb: 2,
+                      position: 'relative',
+                      zIndex: 1
+                    }}>
+                      <Box sx={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'linear-gradient(135deg, #fdd835 0%, #f57f17 100%)',
+                        boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
+                        mr: 2,
+                        animation: 'winner-pulse 2s infinite',
+                        '@keyframes winner-pulse': {
+                          '0%': { boxShadow: '0 0 0 0 rgba(255, 215, 0, 0.7)' },
+                          '70%': { boxShadow: '0 0 0 10px rgba(255, 215, 0, 0)' },
+                          '100%': { boxShadow: '0 0 0 0 rgba(255, 215, 0, 0)' }
+                        }
+                      }}>
+                        <EmojiEventsIcon sx={{
+                          color: '#1b5e20',
+                          fontSize: '2rem',
+                          filter: 'drop-shadow(0 0 5px rgba(255, 215, 0, 0.5))'
+                        }} />
+                      </Box>
+
+                      <Box>
+                        <Typography variant="h6" sx={{
+                          color: '#fdd835',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          letterSpacing: '1px',
+                          textShadow: '0 0 10px rgba(255, 215, 0, 0.5)',
+                          lineHeight: 1.2
+                        }}>
+                          Winners
+                        </Typography>
+                        <Typography variant="caption" sx={{
+                          color: 'rgba(255, 255, 255, 0.7)',
+                          display: 'block'
+                        }}>
+                          {previousPoolWinners.length} lucky players
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    {/* Winners List */}
+                    <Box sx={{
+                      maxHeight: '250px',
+                      overflowY: 'auto',
+                      pr: 1,
+                      position: 'relative',
+                      zIndex: 1,
+                      '&::-webkit-scrollbar': {
+                        width: '6px',
+                      },
+                      '&::-webkit-scrollbar-track': {
+                        background: 'rgba(0, 0, 0, 0.2)',
+                        borderRadius: '3px',
+                      },
+                      '&::-webkit-scrollbar-thumb': {
+                        background: 'linear-gradient(to bottom, #fdd835, #f57f17)',
+                        borderRadius: '3px',
+                        border: '1px solid rgba(0, 0, 0, 0.2)'
+                      },
+                    }}>
+                      {previousPoolWinners.map((winner, index) => (
+                        <Box
+                          key={`winner-${index}`}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            p: 1.5,
+                            borderRadius: 2,
+                            mb: 1,
+                            background: 'linear-gradient(90deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%)',
+                            border: '1px solid rgba(76, 175, 80, 0.2)',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)',
+                              background: 'linear-gradient(90deg, rgba(76, 175, 80, 0.15) 0%, rgba(76, 175, 80, 0.1) 100%)',
+                              borderColor: 'rgba(76, 175, 80, 0.3)'
+                            },
+                            position: 'relative',
+                            overflow: 'hidden'
+                          }}
+                        >
+                          {/* Winner badge for top 3 */}
+                          {index < 3 && (
+                            <Box sx={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              width: 0,
+                              height: 0,
+                              borderStyle: 'solid',
+                              borderWidth: '20px 20px 0 0',
+                              borderColor: index === 0 ? '#ffd700 transparent transparent transparent' :
+                                          index === 1 ? '#c0c0c0 transparent transparent transparent' :
+                                          '#cd7f32 transparent transparent transparent',
+                              zIndex: 1
+                            }} />
+                          )}
+
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Avatar
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                bgcolor: 'rgba(76, 175, 80, 0.2)',
+                                border: '1px solid rgba(76, 175, 80, 0.3)',
+                                color: '#4caf50',
+                                mr: 1.5,
+                                fontSize: '0.8rem',
+                                fontWeight: 'bold'
+                              }}
+                            >
+                              {index + 1}
+                            </Avatar>
+                            <Typography variant="body2" sx={{
+                              color: 'white',
+                              fontWeight: 500,
+                              textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+                            }}>
+                              {formatAddress(winner)}
+                            </Typography>
+                          </Box>
+
+                          <Link
+                            href={getBscScanUrl(winner)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            sx={{
+                              color: 'rgba(255, 255, 255, 0.7)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              p: 0.5,
+                              borderRadius: '50%',
+                              bgcolor: 'rgba(0, 0, 0, 0.2)',
+                              transition: 'all 0.2s ease',
+                              '&:hover': {
+                                color: '#fdd835',
+                                bgcolor: 'rgba(0, 0, 0, 0.4)',
+                                transform: 'scale(1.1)'
+                              }
+                            }}
+                          >
+                            <OpenInNewIcon fontSize="small" />
+                          </Link>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
+                )}
+
+                {/* Losers Section */}
+                {previousPoolLosers.length > 0 && (
+                  <Box sx={{
+                    flex: 1,
+                    p: 3,
+                    position: 'relative',
+                    background: 'linear-gradient(135deg, rgba(244, 67, 54, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%)',
+                    overflow: 'hidden'
+                  }}>
+                    {/* Animated background */}
+                    <Box sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      background: 'radial-gradient(circle at 70% 30%, rgba(244, 67, 54, 0.1) 0%, transparent 70%)',
+                      zIndex: 0
+                    }} />
+
+                    {/* Losers Header */}
+                    <Box sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      mb: 2,
+                      position: 'relative',
+                      zIndex: 1
+                    }}>
+                      <Box sx={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'linear-gradient(135deg, #f44336 0%, #d32f2f 100%)',
+                        boxShadow: '0 0 20px rgba(244, 67, 54, 0.5)',
+                        mr: 2,
+                        animation: 'loser-pulse 2s infinite',
+                        '@keyframes loser-pulse': {
+                          '0%': { boxShadow: '0 0 0 0 rgba(244, 67, 54, 0.7)' },
+                          '70%': { boxShadow: '0 0 0 10px rgba(244, 67, 54, 0)' },
+                          '100%': { boxShadow: '0 0 0 0 rgba(244, 67, 54, 0)' }
+                        }
+                      }}>
+                        <SentimentVeryDissatisfiedIcon sx={{
+                          color: 'white',
+                          fontSize: '2rem',
+                          filter: 'drop-shadow(0 0 5px rgba(244, 67, 54, 0.5))'
+                        }} />
+                      </Box>
+
+                      <Box>
+                        <Typography variant="h6" sx={{
+                          color: '#f44336',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          letterSpacing: '1px',
+                          textShadow: '0 0 10px rgba(244, 67, 54, 0.5)',
+                          lineHeight: 1.2
+                        }}>
+                          Losers
+                        </Typography>
+                        <Typography variant="caption" sx={{
+                          color: 'rgba(255, 255, 255, 0.7)',
+                          display: 'block'
+                        }}>
+                          Better luck next time
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    {/* Losers List */}
+                    <Box sx={{
+                      maxHeight: '250px',
+                      overflowY: 'auto',
+                      pr: 1,
+                      position: 'relative',
+                      zIndex: 1,
+                      '&::-webkit-scrollbar': {
+                        width: '6px',
+                      },
+                      '&::-webkit-scrollbar-track': {
+                        background: 'rgba(0, 0, 0, 0.2)',
+                        borderRadius: '3px',
+                      },
+                      '&::-webkit-scrollbar-thumb': {
+                        background: 'linear-gradient(to bottom, #f44336, #d32f2f)',
+                        borderRadius: '3px',
+                        border: '1px solid rgba(0, 0, 0, 0.2)'
+                      },
+                    }}>
+                      {previousPoolLosers.map((loser, index) => (
+                        <Box
+                          key={`loser-${index}`}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            p: 1.5,
+                            borderRadius: 2,
+                            mb: 1,
+                            background: 'linear-gradient(90deg, rgba(244, 67, 54, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%)',
+                            border: '1px solid rgba(244, 67, 54, 0.2)',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)',
+                              background: 'linear-gradient(90deg, rgba(244, 67, 54, 0.15) 0%, rgba(244, 67, 54, 0.1) 100%)',
+                              borderColor: 'rgba(244, 67, 54, 0.3)'
+                            },
+                            position: 'relative',
+                            overflow: 'hidden'
+                          }}
+                        >
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Avatar
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                bgcolor: 'rgba(244, 67, 54, 0.2)',
+                                border: '1px solid rgba(244, 67, 54, 0.3)',
+                                color: '#f44336',
+                                mr: 1.5,
+                                fontSize: '0.8rem',
+                                fontWeight: 'bold'
+                              }}
+                            >
+                              {index + 1}
+                            </Avatar>
+                            <Typography variant="body2" sx={{
+                              color: 'white',
+                              fontWeight: 500,
+                              textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+                            }}>
+                              {formatAddress(loser)}
+                            </Typography>
+                          </Box>
+
+                          <Link
+                            href={getBscScanUrl(loser)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            sx={{
+                              color: 'rgba(255, 255, 255, 0.7)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              p: 0.5,
+                              borderRadius: '50%',
+                              bgcolor: 'rgba(0, 0, 0, 0.2)',
+                              transition: 'all 0.2s ease',
+                              '&:hover': {
+                                color: '#f44336',
+                                bgcolor: 'rgba(0, 0, 0, 0.4)',
+                                transform: 'scale(1.1)'
+                              }
+                            }}
+                          >
+                            <OpenInNewIcon fontSize="small" />
+                          </Link>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
+                )}
+              </Box>
+            </Box>
+          )}
 
           {/* Participation and Run Pool Buttons */}
           <Box>

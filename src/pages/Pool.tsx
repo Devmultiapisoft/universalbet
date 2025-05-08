@@ -177,7 +177,7 @@ const Pool: React.FC = () => {
       console.log(`Approving ${ethers.utils.formatUnits(approvalAmount, 18)} USDT for ${RAFFLE_CONTRACT_ADDRESS}...`);
 
       await approveUSDT(RAFFLE_CONTRACT_ADDRESS, approvalAmount);
-
+      
       // Update allowance after approval
       const newAllowance = await getUSDTAllowance(account, RAFFLE_CONTRACT_ADDRESS);
       setAllowance(newAllowance);

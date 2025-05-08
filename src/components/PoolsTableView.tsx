@@ -18,12 +18,16 @@ import {
   isRafflePaused,
   getEntryFee,
   getPoolStrength,
-  getUSDTBalance
+  getUSDTBalance,
+  getPoolWinnersArr,
+  getPoolLosersArr
 } from '../services/contractService';
 import { POOL_CONTRACTS } from '../config';
 import CasinoIcon from '@mui/icons-material/Casino';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import PersonIcon from '@mui/icons-material/Person';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import { useNavigate } from 'react-router-dom';
 
 interface PoolData {
@@ -35,6 +39,8 @@ interface PoolData {
   isPaused: boolean;
   poolStrength: number;
   isDeployed: boolean;
+  previousPoolWinners: string[];
+  previousPoolLosers: string[];
 }
 
 const PoolsTableView: React.FC = () => {
@@ -126,7 +132,9 @@ const PoolsTableView: React.FC = () => {
             entryFee: ethers.BigNumber.from(0),
             isPaused: true,
             poolStrength: 0,
-            isDeployed: false
+            isDeployed: false,
+            previousPoolWinners: [],
+            previousPoolLosers: []
           };
         }
       });
@@ -141,7 +149,8 @@ const PoolsTableView: React.FC = () => {
       }
 
       const results = await Promise.all(poolsDataPromises);
-      setPoolsData(results);
+      // Add type assertion to fix TypeScript error
+      setPoolsData(results as PoolData[]);
     } catch (err: any) {
       console.error('Error fetching pools data:', err);
       setError('Failed to load pools data. Please try again.');
@@ -451,6 +460,13 @@ const PoolsTableView: React.FC = () => {
       </Box>
     );
   };
+
+  // Helper function to format address for display
+  const formatAddress = (address: string): string => {
+    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+  };
+
+  
 
   // Helper function to render the center of the table
   const renderTableCenter = (pool: PoolData) => {
@@ -855,6 +871,7 @@ const PoolsTableView: React.FC = () => {
 
                     {/* Center of the table */}
                     {renderTableCenter(pool)}
+
                   </Box>
                 </Paper>
 

@@ -3,12 +3,12 @@ export const REFERRAL_CONTRACT_ADDRESS = '0x6EDbcb1df05E09cceB74cb4239b3856B33a2
 export const USDT_CONTRACT_ADDRESS = '0x4aE58BfC16b20bD67755FFD5560e85779D962415'; // Updated address
 
 // Original $1 pool contract - keeping for backward compatibility
-export const RAFFLE_CONTRACT_ADDRESS = '0x88046520320b3c9A9521F93b806B89A3D3033f3c'; // Fixed checksum
+export const RAFFLE_CONTRACT_ADDRESS = '0x0a28AcE8d4d2024580bD68C198f791c4D4919a3c'; // Fixed checksum
 
 // All pool contracts with different price tiers
 export const POOL_CONTRACTS = {
   POOL_1_DOLLAR: {
-    address: '0x88046520320b3c9A9521F93b806B89A3D3033f3c', // Fixed checksum (Same as RAFFLE_CONTRACT_ADDRESS)
+    address: '0x0a28AcE8d4d2024580bD68C198f791c4D4919a3c', // Fixed checksum (Same as RAFFLE_CONTRACT_ADDRESS)
     name: '$1 Pool',
     entryFeeUSD: 1
   },

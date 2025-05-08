@@ -63,9 +63,27 @@ export const checkIfRegistered = async (address: string) => {
 };
 
 export const register = async (referrerAddress: string) => {
-  const contract = await getReferralContract();
-  const tx = await contract.register(referrerAddress);
-  return await tx.wait();
+  try {
+    console.log(`Registering with referrer: ${referrerAddress}`);
+    const contract = await getReferralContract();
+    const tx = await contract.register(referrerAddress);
+    console.log('Registration transaction sent:', tx.hash);
+    const receipt = await tx.wait();
+    console.log('Registration transaction confirmed:', receipt);
+
+    // Get the signer's address
+    const signer = await getSigner();
+    const address = await signer.getAddress();
+
+    // Verify registration was successful
+    const isRegistered = await checkIfRegistered(address);
+    console.log(`Registration verification for ${address}: ${isRegistered}`);
+
+    return receipt;
+  } catch (error) {
+    console.error('Error in register function:', error);
+    throw error;
+  }
 };
 
 export const getReferrer = async (address: string) => {
@@ -540,6 +558,94 @@ export const getTotalParticipantsCount = async () => {
   } catch (error) {
     console.error('Error getting total participants count:', error);
     return 0;
+  }
+};
+
+// Function to get pool winners array
+export const getPoolWinnersArr = async (poolId: number, poolType?: string) => {
+  try {
+    console.log(`Getting winners array for pool ${poolId} in ${poolType || 'RAFFLE_CONTRACT'}...`);
+    const contract = await getAppropriateContract(poolType);
+
+    try {
+      // Try to call the getPoolWinnersArr function
+      const winners = await contract.getPoolWinnersArr(poolId);
+      console.log(`Pool ${poolId} winners in ${poolType || 'RAFFLE_CONTRACT'}:`, winners);
+      return winners;
+    } catch (e) {
+      console.warn(`getPoolWinnersArr function not found for ${poolType}, trying alternative approach`);
+
+      // Alternative approach: Check if there's a poolWinners mapping or array
+      try {
+        // Try to get the number of winners first
+        const winnersCount = await contract.getpoolWinners(poolId);
+        console.log(`Pool ${poolId} has ${winnersCount} winners`);
+
+        // Get each winner
+        const winners = [];
+        for (let i = 0; i < Number(winnersCount); i++) {
+          try {
+            const winner = await contract.poolWinners(poolId, i);
+            winners.push(winner);
+          } catch (winnerError) {
+            console.warn(`Error getting winner at index ${i}:`, winnerError);
+          }
+        }
+
+        console.log(`Pool ${poolId} winners (alternative method):`, winners);
+        return winners;
+      } catch (alternativeError) {
+        console.warn(`Alternative approach failed:`, alternativeError);
+        return [];
+      }
+    }
+  } catch (error) {
+    console.error(`Error getting winners array for pool ${poolId} in ${poolType || 'RAFFLE_CONTRACT'}:`, error);
+    return [];
+  }
+};
+
+// Function to get pool losers array
+export const getPoolLosersArr = async (poolId: number, poolType?: string) => {
+  try {
+    console.log(`Getting losers array for pool ${poolId} in ${poolType || 'RAFFLE_CONTRACT'}...`);
+    const contract = await getAppropriateContract(poolType);
+
+    try {
+      // Try to call the getPoolLosersArr function
+      const losers = await contract.getPoolLosersArr(poolId);
+      console.log(`Pool ${poolId} losers in ${poolType || 'RAFFLE_CONTRACT'}:`, losers);
+      return losers;
+    } catch (e) {
+      console.warn(`getPoolLosersArr function not found for ${poolType}, trying alternative approach`);
+
+      // Alternative approach: Check if there's a poolLosers mapping or array
+      try {
+        // Try to get the number of losers first
+        const losersCount = await contract.getpoolLosers(poolId);
+        console.log(`Pool ${poolId} has ${losersCount} losers`);
+
+        // Get each loser
+        const losers = [];
+        for (let i = 0; i < Number(losersCount); i++) {
+          try {
+            const loser = await contract.poolLosers(poolId, i);
+            losers.push(loser);
+          } catch (loserError) {
+            console.warn(`Error getting loser at index ${i}:`, loserError);
+          }
+        }
+
+        console.log(`Pool ${poolId} losers (alternative method):`, losers);
+        return losers;
+      } catch (alternativeError) {
+        console.warn(`Alternative approach failed:`, alternativeError);
+        return [];
+      }
+    }
+  } catch (error) {
+    console.error(`Error getting losers array for pool ${poolId} in ${poolType || 'RAFFLE_CONTRACT'}:`, error);
+    return [];
   }
 };
 

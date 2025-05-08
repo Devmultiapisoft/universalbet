@@ -29,7 +29,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import PersonIcon from '@mui/icons-material/Person';
 
 const Register: React.FC = () => {
-  const { isConnected, connectWallet, account, isRegistered } = useWallet();
+  const { isConnected, connectWallet, account, isRegistered, refreshRegistrationStatus } = useWallet();
   const navigate = useNavigate();
   const theme = useTheme();
   const [referrerAddress, setReferrerAddress] = useState<string>('');
@@ -62,10 +62,23 @@ const Register: React.FC = () => {
 
   // Redirect to dashboard if already registered
   useEffect(() => {
-    if (isConnected && isRegistered) {
-      navigate('/dashboard');
-    }
-  }, [isConnected, isRegistered, navigate]);
+    const checkAndRedirect = async () => {
+      if (isConnected) {
+        if (isRegistered) {
+          // If already marked as registered, redirect immediately
+          navigate('/dashboard');
+        } else if (account) {
+          // Double-check registration status to be sure
+          const actuallyRegistered = await refreshRegistrationStatus();
+          if (actuallyRegistered) {
+            navigate('/dashboard');
+          }
+        }
+      }
+    };
+
+    checkAndRedirect();
+  }, [isConnected, isRegistered, account, navigate, refreshRegistrationStatus]);
 
   const handleRegister = async () => {
     if (!isConnected) {
@@ -92,13 +105,27 @@ const Register: React.FC = () => {
       // Call the register function
       await register(referrer);
 
+      // Immediately refresh registration status
+      const isNowRegistered = await refreshRegistrationStatus();
+      console.log('Registration status after registration:', isNowRegistered);
+
       setSuccess(true);
       setActiveStep(2);
 
-      // Redirect to dashboard after successful registration
-      setTimeout(() => {
+      // Redirect to dashboard immediately if registration status is updated
+      if (isNowRegistered) {
         navigate('/dashboard');
-      }, 3000);
+      } else {
+        // Fallback: redirect after a delay if the status wasn't updated immediately
+        console.log('Registration status not updated immediately, using fallback redirect');
+        setTimeout(() => {
+          refreshRegistrationStatus().then(status => {
+            if (status) {
+              navigate('/dashboard');
+            }
+          });
+        }, 2000);
+      }
 
     } catch (err: any) {
       console.error('Registration error:', err);

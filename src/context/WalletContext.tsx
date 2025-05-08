@@ -11,6 +11,7 @@ interface WalletContextType {
   connectWallet: () => Promise<void>;
   disconnectWallet: () => void;
   switchToCorrectNetwork: () => Promise<boolean>;
+  refreshRegistrationStatus: () => Promise<boolean>;
   loading: boolean;
 }
 
@@ -22,6 +23,7 @@ const WalletContext = createContext<WalletContextType>({
   connectWallet: async () => {},
   disconnectWallet: () => {},
   switchToCorrectNetwork: async () => false,
+  refreshRegistrationStatus: async () => false,
   loading: false,
 });
 
@@ -86,6 +88,22 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     setAccount(null);
     setIsConnected(false);
     setIsRegistered(false);
+  };
+
+  // Function to refresh registration status
+  const refreshRegistrationStatus = async (): Promise<boolean> => {
+    if (!account) return false;
+
+    try {
+      console.log('Refreshing registration status for account:', account);
+      const registered = await checkIfRegistered(account);
+      console.log('Updated registration status:', registered);
+      setIsRegistered(registered);
+      return registered;
+    } catch (error) {
+      console.error('Error refreshing registration status:', error);
+      return false;
+    }
   };
 
   // Check if wallet is already connected
@@ -171,6 +189,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         connectWallet,
         disconnectWallet,
         switchToCorrectNetwork,
+        refreshRegistrationStatus,
         loading
       }}
     >
