@@ -1,7 +1,18 @@
 {
   "abi": [
     {
-      "inputs": [],
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_referralRegistry",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_usd",
+          "type": "address"
+        }
+      ],
       "stateMutability": "nonpayable",
       "type": "constructor"
     },
