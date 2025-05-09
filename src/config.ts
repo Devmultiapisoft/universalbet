@@ -40,4 +40,4 @@ export const POOL_CONTRACTS = {
 };
 
 // Chain ID for the network where the contract is deployed (e.g., 97 for BSC Testnet)
-export const CHAIN_ID = 97; // BSC Testnet
+export const CHAIN_ID = 56; // BSC Testnet

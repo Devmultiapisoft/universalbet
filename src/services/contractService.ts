@@ -284,6 +284,7 @@ export const getUSDTBalance = async (address: string) => {
   try {
     console.log(`Getting USDT balance for ${address}...`);
     const contract = await getUSDTContract();
+    console.log(contract)
     const balance = await contract.balanceOf(address);
     console.log(`USDT balance for ${address}:`, ethers.utils.formatUnits(balance, 18), 'USDT');
     return balance;

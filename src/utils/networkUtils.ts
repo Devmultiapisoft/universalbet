@@ -1,16 +1,16 @@
 import { CHAIN_ID } from '../config';
 
 // BSC Testnet network parameters
-const BSC_TESTNET = {
-  chainId: '0x61', // 97 in hex
-  chainName: 'Binance Smart Chain Testnet',
+const BSC_MAINNET = {
+  chainId: '0x38', // 97 in hex
+  chainName: 'Binance Smart Chain Mainnet',
   nativeCurrency: {
     name: 'BNB',
-    symbol: 'tBNB',
+    symbol: 'BNB',
     decimals: 18
   },
-  rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
-  blockExplorerUrls: ['https://testnet.bscscan.com/']
+  rpcUrls: ['https://bsc-dataseed.binance.org/'],
+  blockExplorerUrls: ['https://bscscan.com/']
 };
 
 /**
@@ -49,7 +49,7 @@ export const switchNetwork = async (): Promise<boolean> => {
       try {
         await window.ethereum.request({
           method: 'wallet_addEthereumChain',
-          params: [BSC_TESTNET],
+          params: [BSC_MAINNET],
         });
         return true;
       } catch (addError) {
